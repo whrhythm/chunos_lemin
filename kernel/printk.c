@@ -37,10 +37,69 @@ int numbric(char *buf, unsigned int num, int flag)
 	
 	switch (flag & PRINT_MASK) {
 		case PRINT_DEC:
-		if(flag & PRINT_SIGNED)
-			len = itoa(buf, (int)num);
-		else
-			len = uitoa(buf, num);
+			if(flag & PRINT_SIGNED)
+				len = itoa(buf, (int)num);
+			else
+				len = uitoa(buf, num);
+		case PRINT_HEX:
+			len = hextoa(buf, num);
+			break;
+		case PRINT_BIN:
+			len = bintoa(buf, num);
+			break;
+		case PRINT_OCT:
+			len = octtoa(buf, num);
+			break;
+		default:
+			break;
 	}
+	
+	return len;
+}
 
+int vsprintf(char *buf, const char *fmt, va_list arg)
+{
+	char *str;
+	int len;
+	char *tmp;
+	s32 number;
+	u32 number;
+	int flag = 0;
+	
+	if (buf == NULL)
+		return -1;
+	
+	for (str = buf; *fmt; ++fmt) {
+		if (*fmt != '%') {
+			*str++ = *fmt;
+			continue;
+		}
+		
+		fmt++;
+		switch (*fmt) {
+			case 'd':
+				flag |= PRINT_DEC | PRINT_SIGNED;
+				break;
+			case 'x':
+				flag |= PRINT_HEX | PRINT_UNSIGNED;
+				break;
+			case 'u':
+				flag |= PRINT_DEC | PRINT_UNSIGNED;
+				break;
+			case 's':
+				len = strlen(tmp = va_arg(arg, char *));
+				strncpy(str, tmp, len);
+				str += len;
+				break;
+			case 'c':
+				flag |= PRINT_DECC | PRINT_SIGNED;
+				break;
+			case 'd':
+				flag |= PRINT_DECC | PRINT_SIGNED;
+				break;
+			case 'd':
+				flag |= PRINT_DECC | PRINT_SIGNED;
+				break;
+		}
+	}
 }

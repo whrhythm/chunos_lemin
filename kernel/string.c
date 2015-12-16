@@ -1,29 +1,53 @@
 
-int num_to_str(char *buf, unsigned int num, int ratio)
+
+#define MAX_NUM_STRLEN 32
+
+int abs(int num)
+{
+	if (num > 0)
+		return num;
+	return (~num) + 1;
+}
+
+char *inverse(char *str, int len)
+{
+	char ch;
+	int i;
+
+	if (NULL == str)
+		return NULL;
+	len = len / 2;
+	for (i = 0; i < len +1; ++i)
+	{
+		ch = *str;
+		*str = *(str + len - 1 - i);
+		*(str + len -1 - i) = ch;
+	
+	}	
+	
+}
+
+char *num_to_str(unsigned int num, int model)
 {
 	char hex[] = "0123456789abcdef";
-	char tmp[32];
-	int len;
+	char *buf, *tmp;
+	
+	int remain;
+	int integer;
+	int i;
 
-	len = 0;
+	buf = malloc(MAX_NUM_STRLEN);
+	tmp = buf;
+	if (NULL == buf) {
+		return ENMEM;
+	}
 	do {
-		m = num % ratio;
-		num = num / ratio;
-		*tmp++ = hex[m];
-		len++;
-	} while (num >= ratio);
-	if (num != 0) {
-		*tmp++ = hex[num];
-		len++;
-	}
+		remain = num % model;
+		*buf++ = hex[remain];
+		integer = num / model;
+	} while (integer > 0);
 	
-	res = len;
-	while (len > 0) {
-		*buf++ = tmp_buf[len - 1];
-		len--;
-	}
-	
-	result res;
+	return inverse(tmp, i);
 }
 
 int itoa(char *buf, int num)
@@ -31,11 +55,11 @@ int itoa(char *buf, int num)
 	int len = 0;
 	int tmp = 0;
 	
-	if (buf == NULL)
+	if (NULL == buf)
 		return -1;
 	
 	if (num < 0) {
-		num = absolute(num);
+		num = abs(num);
 		*buf++ = '-';
 		tmp = 1;
 	}
